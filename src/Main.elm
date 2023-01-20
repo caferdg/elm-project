@@ -32,10 +32,10 @@ type Msg
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
-  case msg of
-    Change guess -> case guess of
-      "theWordToGuess" -> (Win, Cmd.none)
-      _ -> (Waiting guess, Cmd.none)
+  case msg of 
+    Change guess ->
+    if List.member guess ["cat", "dog", "rat"] then (Win, Cmd.none)
+    else (Waiting guess, Cmd.none)
 
 
 -- SUBSCRIPTIONS
