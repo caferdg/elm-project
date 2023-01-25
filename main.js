@@ -4370,6 +4370,89 @@ function _Browser_load(url)
 		}
 	}));
 }
+
+
+
+var _Bitwise_and = F2(function(a, b)
+{
+	return a & b;
+});
+
+var _Bitwise_or = F2(function(a, b)
+{
+	return a | b;
+});
+
+var _Bitwise_xor = F2(function(a, b)
+{
+	return a ^ b;
+});
+
+function _Bitwise_complement(a)
+{
+	return ~a;
+};
+
+var _Bitwise_shiftLeftBy = F2(function(offset, a)
+{
+	return a << offset;
+});
+
+var _Bitwise_shiftRightBy = F2(function(offset, a)
+{
+	return a >> offset;
+});
+
+var _Bitwise_shiftRightZfBy = F2(function(offset, a)
+{
+	return a >>> offset;
+});
+
+
+
+function _Time_now(millisToPosix)
+{
+	return _Scheduler_binding(function(callback)
+	{
+		callback(_Scheduler_succeed(millisToPosix(Date.now())));
+	});
+}
+
+var _Time_setInterval = F2(function(interval, task)
+{
+	return _Scheduler_binding(function(callback)
+	{
+		var id = setInterval(function() { _Scheduler_rawSpawn(task); }, interval);
+		return function() { clearInterval(id); };
+	});
+});
+
+function _Time_here()
+{
+	return _Scheduler_binding(function(callback)
+	{
+		callback(_Scheduler_succeed(
+			A2($elm$time$Time$customZone, -(new Date().getTimezoneOffset()), _List_Nil)
+		));
+	});
+}
+
+
+function _Time_getZoneName()
+{
+	return _Scheduler_binding(function(callback)
+	{
+		try
+		{
+			var name = $elm$time$Time$Name(Intl.DateTimeFormat().resolvedOptions().timeZone);
+		}
+		catch (e)
+		{
+			var name = $elm$time$Time$Offset(new Date().getTimezoneOffset());
+		}
+		callback(_Scheduler_succeed(name));
+	});
+}
 var $elm$core$Basics$EQ = {$: 'EQ'};
 var $elm$core$Basics$GT = {$: 'GT'};
 var $elm$core$Basics$LT = {$: 'LT'};
@@ -5159,30 +5242,288 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$element = _Browser_element;
-var $author$project$Main$Waiting = function (a) {
-	return {$: 'Waiting', a: a};
+var $author$project$Main$GenerateWord = function (a) {
+	return {$: 'GenerateWord', a: a};
 };
-var $elm$core$Platform$Cmd$batch = _Platform_batch;
-var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
+var $author$project$Main$Model = F3(
+	function (guess, toGuess, win) {
+		return {guess: guess, toGuess: toGuess, win: win};
+	});
+var $elm$random$Random$Generate = function (a) {
+	return {$: 'Generate', a: a};
+};
+var $elm$random$Random$Seed = F2(
+	function (a, b) {
+		return {$: 'Seed', a: a, b: b};
+	});
+var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
+var $elm$random$Random$next = function (_v0) {
+	var state0 = _v0.a;
+	var incr = _v0.b;
+	return A2($elm$random$Random$Seed, ((state0 * 1664525) + incr) >>> 0, incr);
+};
+var $elm$random$Random$initialSeed = function (x) {
+	var _v0 = $elm$random$Random$next(
+		A2($elm$random$Random$Seed, 0, 1013904223));
+	var state1 = _v0.a;
+	var incr = _v0.b;
+	var state2 = (state1 + x) >>> 0;
+	return $elm$random$Random$next(
+		A2($elm$random$Random$Seed, state2, incr));
+};
+var $elm$time$Time$Name = function (a) {
+	return {$: 'Name', a: a};
+};
+var $elm$time$Time$Offset = function (a) {
+	return {$: 'Offset', a: a};
+};
+var $elm$time$Time$Zone = F2(
+	function (a, b) {
+		return {$: 'Zone', a: a, b: b};
+	});
+var $elm$time$Time$customZone = $elm$time$Time$Zone;
+var $elm$time$Time$Posix = function (a) {
+	return {$: 'Posix', a: a};
+};
+var $elm$time$Time$millisToPosix = $elm$time$Time$Posix;
+var $elm$time$Time$now = _Time_now($elm$time$Time$millisToPosix);
+var $elm$time$Time$posixToMillis = function (_v0) {
+	var millis = _v0.a;
+	return millis;
+};
+var $elm$random$Random$init = A2(
+	$elm$core$Task$andThen,
+	function (time) {
+		return $elm$core$Task$succeed(
+			$elm$random$Random$initialSeed(
+				$elm$time$Time$posixToMillis(time)));
+	},
+	$elm$time$Time$now);
+var $elm$random$Random$step = F2(
+	function (_v0, seed) {
+		var generator = _v0.a;
+		return generator(seed);
+	});
+var $elm$random$Random$onEffects = F3(
+	function (router, commands, seed) {
+		if (!commands.b) {
+			return $elm$core$Task$succeed(seed);
+		} else {
+			var generator = commands.a.a;
+			var rest = commands.b;
+			var _v1 = A2($elm$random$Random$step, generator, seed);
+			var value = _v1.a;
+			var newSeed = _v1.b;
+			return A2(
+				$elm$core$Task$andThen,
+				function (_v2) {
+					return A3($elm$random$Random$onEffects, router, rest, newSeed);
+				},
+				A2($elm$core$Platform$sendToApp, router, value));
+		}
+	});
+var $elm$random$Random$onSelfMsg = F3(
+	function (_v0, _v1, seed) {
+		return $elm$core$Task$succeed(seed);
+	});
+var $elm$random$Random$Generator = function (a) {
+	return {$: 'Generator', a: a};
+};
+var $elm$random$Random$map = F2(
+	function (func, _v0) {
+		var genA = _v0.a;
+		return $elm$random$Random$Generator(
+			function (seed0) {
+				var _v1 = genA(seed0);
+				var a = _v1.a;
+				var seed1 = _v1.b;
+				return _Utils_Tuple2(
+					func(a),
+					seed1);
+			});
+	});
+var $elm$random$Random$cmdMap = F2(
+	function (func, _v0) {
+		var generator = _v0.a;
+		return $elm$random$Random$Generate(
+			A2($elm$random$Random$map, func, generator));
+	});
+_Platform_effectManagers['Random'] = _Platform_createManager($elm$random$Random$init, $elm$random$Random$onEffects, $elm$random$Random$onSelfMsg, $elm$random$Random$cmdMap);
+var $elm$random$Random$command = _Platform_leaf('Random');
+var $elm$random$Random$generate = F2(
+	function (tagger, generator) {
+		return $elm$random$Random$command(
+			$elm$random$Random$Generate(
+				A2($elm$random$Random$map, tagger, generator)));
+	});
+var $elm$core$Bitwise$and = _Bitwise_and;
+var $elm$core$Basics$negate = function (n) {
+	return -n;
+};
+var $elm$core$Bitwise$xor = _Bitwise_xor;
+var $elm$random$Random$peel = function (_v0) {
+	var state = _v0.a;
+	var word = (state ^ (state >>> ((state >>> 28) + 4))) * 277803737;
+	return ((word >>> 22) ^ word) >>> 0;
+};
+var $elm$random$Random$int = F2(
+	function (a, b) {
+		return $elm$random$Random$Generator(
+			function (seed0) {
+				var _v0 = (_Utils_cmp(a, b) < 0) ? _Utils_Tuple2(a, b) : _Utils_Tuple2(b, a);
+				var lo = _v0.a;
+				var hi = _v0.b;
+				var range = (hi - lo) + 1;
+				if (!((range - 1) & range)) {
+					return _Utils_Tuple2(
+						(((range - 1) & $elm$random$Random$peel(seed0)) >>> 0) + lo,
+						$elm$random$Random$next(seed0));
+				} else {
+					var threshhold = (((-range) >>> 0) % range) >>> 0;
+					var accountForBias = function (seed) {
+						accountForBias:
+						while (true) {
+							var x = $elm$random$Random$peel(seed);
+							var seedN = $elm$random$Random$next(seed);
+							if (_Utils_cmp(x, threshhold) < 0) {
+								var $temp$seed = seedN;
+								seed = $temp$seed;
+								continue accountForBias;
+							} else {
+								return _Utils_Tuple2((x % range) + lo, seedN);
+							}
+						}
+					};
+					return accountForBias(seed0);
+				}
+			});
+	});
+var $elm$core$Array$length = function (_v0) {
+	var len = _v0.a;
+	return len;
+};
+var $elm$core$Array$fromListHelp = F3(
+	function (list, nodeList, nodeListSize) {
+		fromListHelp:
+		while (true) {
+			var _v0 = A2($elm$core$Elm$JsArray$initializeFromList, $elm$core$Array$branchFactor, list);
+			var jsArray = _v0.a;
+			var remainingItems = _v0.b;
+			if (_Utils_cmp(
+				$elm$core$Elm$JsArray$length(jsArray),
+				$elm$core$Array$branchFactor) < 0) {
+				return A2(
+					$elm$core$Array$builderToArray,
+					true,
+					{nodeList: nodeList, nodeListSize: nodeListSize, tail: jsArray});
+			} else {
+				var $temp$list = remainingItems,
+					$temp$nodeList = A2(
+					$elm$core$List$cons,
+					$elm$core$Array$Leaf(jsArray),
+					nodeList),
+					$temp$nodeListSize = nodeListSize + 1;
+				list = $temp$list;
+				nodeList = $temp$nodeList;
+				nodeListSize = $temp$nodeListSize;
+				continue fromListHelp;
+			}
+		}
+	});
+var $elm$core$Array$fromList = function (list) {
+	if (!list.b) {
+		return $elm$core$Array$empty;
+	} else {
+		return A3($elm$core$Array$fromListHelp, list, _List_Nil, 0);
+	}
+};
+var $author$project$Main$wordsList = $elm$core$Array$fromList(
+	_List_fromArray(
+		['a', 'anywhere', 'below', 'burn', 'climb', 'able', 'apartment', 'bend', 'bus', 'close', 'about', 'appear', 'beneath', 'business', 'clothes', 'above', 'approach', 'beside', 'busy', 'cloud', 'accept', 'area', 'best', 'but', 'coat', 'across', 'arm', 'better', 'buy', 'coffee', 'act', 'around', 'between', 'by', 'cold', 'actually', 'arrive', 'beyond', 'call', 'college', 'add', 'art', 'big', 'calm', 'color', 'admit', 'as', 'bird', 'camera', 'come', 'afraid', 'ask', 'bit', 'can', 'company', 'after', 'asleep', 'bite', 'car', 'completely', 'afternoon', 'at', 'black', 'card', 'computer', 'again', 'attack', 'block', 'care', 'confuse', 'against', 'attention', 'blood', 'careful', 'consider', 'age', 'aunt', 'blow', 'carefully', 'continue', 'ago', 'avoid', 'blue', 'carry', 'control', 'agree', 'away', 'board', 'case', 'conversation', 'ahead', 'baby', 'boat', 'cat', 'cool', 'air', 'back', 'body', 'catch', 'cop', 'alive', 'bad', 'bone', 'cause', 'corner', 'all', 'bag', 'book', 'ceiling', 'count', 'allow', 'ball', 'boot', 'center', 'counter', 'almost', 'bank', 'bore', 'certain', 'country', 'alone', 'bar', 'both', 'certainly', 'couple', 'along', 'barely', 'bother', 'chair', 'course', 'already', 'bathroom', 'bottle', 'chance', 'cover', 'also', 'be', 'bottom', 'change', 'crazy', 'although', 'beach', 'box', 'check', 'create', 'always', 'bear', 'boy', 'cheek', 'creature', 'among', 'beat', 'brain', 'chest', 'cross', 'and', 'beautiful', 'branch', 'child', 'crowd', 'angry', 'because', 'break', 'choice', 'cry', 'animal', 'become', 'breast', 'choose', 'cup', 'another', 'bed', 'breath', 'church', 'cut', 'answer', 'bedroom', 'breathe', 'cigarette', 'dad', 'any', 'beer', 'bridge', 'circle', 'dance', 'anybody', 'before', 'bright', 'city', 'dark', 'anymore', 'begin', 'bring', 'class', 'darkness', 'anyone', 'behind', 'brother', 'clean', 'daughter', 'anything', 'believe', 'brown', 'clear', 'day', 'anyway', 'belong', 'building', 'clearly', 'dead', 'death', 'except', 'funny', 'history', 'law', 'decide', 'excite', 'future', 'hit', 'lay', 'deep', 'expect', 'game', 'hold', 'lead', 'desk', 'explain', 'garden', 'hole', 'leaf', 'despite', 'expression', 'gate', 'home', 'lean', 'die', 'extra', 'gather', 'hope', 'learn', 'different', 'eye', 'gently', 'horse', 'leave', 'dinner', 'face', 'get', 'hospital', 'leg', 'direction', 'fact', 'gift', 'hot', 'less', 'dirt', 'fade', 'girl', 'hotel', 'let', 'disappear', 'fail', 'give', 'hour', 'letter', 'discover', 'fall', 'glance', 'house', 'lie', 'distance', 'familiar', 'glass', 'how', 'life', 'do', 'family', 'go', 'however', 'lift', 'doctor', 'far', 'god', 'huge', 'light', 'dog', 'fast', 'gold', 'human', 'like', 'door', 'father', 'good', 'hundred', 'line', 'doorway', 'fear', 'grab', 'hurry', 'lip', 'down', 'feed', 'grandfather', 'hurt', 'listen', 'dozen', 'feel', 'grandmother', 'husband', 'little', 'drag', 'few', 'grass', 'I', 'local', 'draw', 'field', 'gray', 'ice', 'lock', 'dream', 'fight', 'great', 'idea', 'long', 'dress', 'figure', 'green', 'if', 'look', 'drink', 'fill', 'ground', 'ignore', 'lose', 'drive', 'final', 'group', 'image', 'lot', 'driver', 'finally', 'grow', 'imagine', 'loud', 'drop', 'find', 'guard', 'immediately', 'love', 'dry', 'fine', 'guess', 'important', 'low', 'during', 'finger', 'gun', 'in', 'lucky', 'dust', 'finish', 'guy', 'information', 'lunch', 'each', 'fire', 'hair', 'inside', 'machine', 'ear', 'first', 'half', 'instead', 'main', 'early', 'fish', 'hall', 'interest', 'make', 'earth', 'fit', 'hallway', 'into', 'man', 'easily', 'five', 'hand', 'it', 'manage', 'east', 'fix', 'hang', 'itself', 'many', 'easy', 'flash', 'happen', 'jacket', 'map', 'eat', 'flat', 'happy', 'job', 'mark', 'edge', 'flight', 'hard', 'join', 'marriage', 'eff', 'ort', 'floor', 'hardly', 'joke', 'marry', 'egg', 'flower', 'hate', 'jump', 'matter', 'eight', 'fly', 'have', 'just', 'may', 'either', 'follow', 'he', 'keep', 'maybe', 'else', 'food', 'head', 'key', 'me', 'empty', 'foot', 'hear', 'kick', 'mean', 'end', 'for', 'heart', 'kid', 'meet', 'engine', 'force', 'heat', 'kill', 'member', 'enjoy', 'forehead', 'heavy', 'kind', 'memory', 'enough', 'forest', 'hell', 'kiss', 'mention', 'enter', 'forever', 'hello', 'kitchen', 'message', 'entire', 'forget', 'help', 'knee', 'metal', 'especially', 'form', 'her', 'knife', 'middle', 'even', 'forward', 'here', 'knock', 'might', 'event', 'four', 'herself', 'know', 'mind', 'ever', 'free', 'hey', 'lady', 'mine', 'every', 'fresh', 'hi', 'land', 'minute', 'everybody', 'friend', 'hide', 'language', 'mirror', 'everyone', 'from', 'high', 'large', 'miss', 'everything', 'front', 'hill', 'last', 'moment', 'everywhere', 'full', 'him', 'later', 'money', 'exactly', 'fun', 'himself', 'laugh', 'month', 'moon', 'our', 'quickly', 'send', 'smile', 'more', 'out', 'quiet', 'sense', 'smoke', 'morning', 'outside', 'quietly', 'serious', 'snap', 'most', 'over', 'quite', 'seriously', 'snow', 'mostly', 'own', 'radio', 'serve', 'so', 'mother', 'page', 'rain', 'service', 'soft', 'mountain', 'pain', 'raise', 'set', 'softly', 'mouth', 'paint', 'rather', 'settle', 'soldier', 'move', 'pair', 'reach', 'seven', 'somebody', 'movie', 'pale', 'read', 'several', 'somehow', 'much', 'palm', 'ready', 'sex', 'someone', 'music', 'pants', 'real', 'shadow', 'something', 'must', 'paper', 'realize', 'shake', 'sometimes', 'my', 'parent', 'really', 'shape', 'somewhere', 'myself', 'part', 'reason', 'share', 'son', 'name', 'party', 'receive', 'sharp', 'song', 'narrow', 'pass', 'recognize', 'she', 'soon', 'near', 'past', 'red', 'sheet', 'sorry', 'nearly', 'path', 'refuse', 'ship', 'sort', 'neck', 'pause', 'remain', 'shirt', 'soul', 'need', 'pay', 'remember', 'shoe', 'sound', 'neighbor', 'people', 'remind', 'shoot', 'south', 'never', 'perfect', 'remove', 'shop', 'space', 'new', 'perhaps', 'repeat', 'short', 'speak', 'news', 'personal', 'reply', 'should', 'special', 'next', 'phone', 'rest', 'shoulder', 'spend', 'nice', 'photo', 'return', 'shout', 'spin', 'night', 'pick', 'reveal', 'shove', 'spirit', 'no', 'picture', 'rich', 'show', 'spot', 'nobody', 'piece', 'ride', 'shower', 'spread', 'nod', 'pile', 'right', 'shrug', 'spring', 'noise', 'pink', 'ring', 'shut', 'stage', 'none', 'place', 'rise', 'sick', 'stair', 'nor', 'plan', 'river', 'side', 'stand', 'normal', 'plastic', 'road', 'sigh', 'star', 'north', 'plate', 'rock', 'sight', 'stare', 'nose', 'play', 'roll', 'sign', 'start', 'not', 'please', 'roof', 'silence', 'state', 'note', 'pocket', 'room', 'silent', 'station', 'nothing', 'point', 'round', 'silver', 'stay', 'notice', 'police', 'row', 'simple', 'steal', 'now', 'pool', 'rub', 'simply', 'step', 'number', 'poor', 'run', 'since', 'stick', 'nurse', 'pop', 'rush', 'sing', 'still', 'of', 'porch', 'sad', 'single', 'stomach', 'off', 'position', 'safe', 'sir', 'stone', 'offer', 'possible', 'same', 'sister', 'stop', 'office', 'pour', 'sand', 'sit', 'store', 'officer', 'power', 'save', 'situation', 'storm', 'often', 'prepare', 'say', 'six', 'story', 'oh', 'press', 'scared', 'size', 'straight', 'okay', 'pretend', 'scene', 'skin', 'strange', 'old', 'pretty', 'school', 'sky', 'street', 'on', 'probably', 'scream', 'slam', 'stretch', 'once', 'problem', 'screen', 'sleep', 'strike', 'one', 'promise', 'sea', 'slide', 'strong', 'only', 'prove', 'search', 'slightly', 'student', 'onto', 'pull', 'seat', 'slip', 'study', 'open', 'push', 'second', 'slow', 'stuff', 'or', 'put', 'see', 'slowly', 'stupid', 'order', 'question', 'seem', 'small', 'such', 'other', 'quick', 'sell', 'smell', 'suddenly', 'suggest', 'thick', 'tree', 'wash', 'window', 'suit', 'thin', 'trip', 'watch', 'wine', 'summer', 'thing', 'trouble', 'water', 'wing', 'sun', 'think', 'truck', 'wave', 'winter', 'suppose', 'third', 'true', 'way', 'wipe', 'sure', 'thirty', 'trust', 'we', 'wish', 'surface', 'this', 'truth', 'wear', 'with', 'surprise', 'those', 'try', 'wedding', 'within', 'sweet', 'though', 'turn', 'week', 'without', 'swing', 'three', 'twenty', 'weight', 'woman', 'system', 'throat', 'twice', 'well', 'wonder', 'table', 'through', 'two', 'west', 'wood', 'take', 'throw', 'uncle', 'wet', 'wooden', 'talk', 'tie', 'under', 'what', 'word', 'tall', 'time', 'understand', 'whatever', 'work', 'tea', 'tiny', 'unless', 'wheel', 'world', 'teach', 'tire', 'until', 'when', 'worry', 'teacher', 'to', 'up', 'where', 'would', 'team', 'today', 'upon', 'whether', 'wrap', 'tear', 'together', 'use', 'which', 'write', 'television', 'tomorrow', 'usual', 'while', 'wrong', 'tell', 'tone', 'usually', 'whisper', 'yard', 'ten', 'tongue', 'very', 'white', 'yeah', 'terrible', 'tonight', 'view', 'who', 'year', 'than', 'too', 'village', 'whole', 'yell', 'thank', 'tooth', 'visit', 'whom', 'yellow', 'that', 'top', 'voice', 'whose', 'yes', 'the', 'toss', 'wait', 'why', 'yet', 'their', 'touch', 'wake', 'wide', 'you', 'them', 'toward', 'walk', 'wife', 'young', 'themselves', 'town', 'wall', 'wild', 'your', 'then', 'track', 'want', 'will', 'yourself', 'there', 'train', 'war', 'win', 'these', 'travel', 'warm', 'wind']));
 var $author$project$Main$init = function (_v0) {
 	return _Utils_Tuple2(
-		$author$project$Main$Waiting(''),
-		$elm$core$Platform$Cmd$none);
+		A3($author$project$Main$Model, '', '', false),
+		A2(
+			$elm$random$Random$generate,
+			$author$project$Main$GenerateWord,
+			A2(
+				$elm$random$Random$int,
+				0,
+				$elm$core$Array$length($author$project$Main$wordsList) - 1)));
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$Main$subscriptions = function (model) {
 	return $elm$core$Platform$Sub$none;
 };
-var $author$project$Main$Win = {$: 'Win'};
+var $elm$core$Array$bitMask = 4294967295 >>> (32 - $elm$core$Array$shiftStep);
+var $elm$core$Basics$ge = _Utils_ge;
+var $elm$core$Elm$JsArray$unsafeGet = _JsArray_unsafeGet;
+var $elm$core$Array$getHelp = F3(
+	function (shift, index, tree) {
+		getHelp:
+		while (true) {
+			var pos = $elm$core$Array$bitMask & (index >>> shift);
+			var _v0 = A2($elm$core$Elm$JsArray$unsafeGet, pos, tree);
+			if (_v0.$ === 'SubTree') {
+				var subTree = _v0.a;
+				var $temp$shift = shift - $elm$core$Array$shiftStep,
+					$temp$index = index,
+					$temp$tree = subTree;
+				shift = $temp$shift;
+				index = $temp$index;
+				tree = $temp$tree;
+				continue getHelp;
+			} else {
+				var values = _v0.a;
+				return A2($elm$core$Elm$JsArray$unsafeGet, $elm$core$Array$bitMask & index, values);
+			}
+		}
+	});
+var $elm$core$Bitwise$shiftLeftBy = _Bitwise_shiftLeftBy;
+var $elm$core$Array$tailIndex = function (len) {
+	return (len >>> 5) << 5;
+};
+var $elm$core$Array$get = F2(
+	function (index, _v0) {
+		var len = _v0.a;
+		var startShift = _v0.b;
+		var tree = _v0.c;
+		var tail = _v0.d;
+		return ((index < 0) || (_Utils_cmp(index, len) > -1)) ? $elm$core$Maybe$Nothing : ((_Utils_cmp(
+			index,
+			$elm$core$Array$tailIndex(len)) > -1) ? $elm$core$Maybe$Just(
+			A2($elm$core$Elm$JsArray$unsafeGet, $elm$core$Array$bitMask & index, tail)) : $elm$core$Maybe$Just(
+			A3($elm$core$Array$getHelp, startShift, index, tree)));
+	});
+var $author$project$Main$grabString = function (a) {
+	if (a.$ === 'Just') {
+		var strin = a.a;
+		return strin;
+	} else {
+		return '';
+	}
+};
+var $elm$core$Platform$Cmd$batch = _Platform_batch;
+var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Main$update = F2(
 	function (msg, model) {
-		var guess = msg.a;
-		if (guess === 'theWordToGuess') {
-			return _Utils_Tuple2($author$project$Main$Win, $elm$core$Platform$Cmd$none);
+		if (msg.$ === 'Change') {
+			var guess = msg.a;
+			return _Utils_eq(guess, model.toGuess) ? _Utils_Tuple2(
+				A3($author$project$Main$Model, '', '', true),
+				$elm$core$Platform$Cmd$none) : _Utils_Tuple2(
+				A3($author$project$Main$Model, guess, model.toGuess, false),
+				$elm$core$Platform$Cmd$none);
 		} else {
+			var newInt = msg.a;
 			return _Utils_Tuple2(
-				$author$project$Main$Waiting(guess),
+				A3(
+					$author$project$Main$Model,
+					'',
+					$author$project$Main$grabString(
+						A2($elm$core$Array$get, newInt, $author$project$Main$wordsList)),
+					false),
 				$elm$core$Platform$Cmd$none);
 		}
 	});
@@ -5226,6 +5567,7 @@ var $elm$html$Html$Events$onInput = function (tagger) {
 			$elm$html$Html$Events$alwaysStop,
 			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
 };
+var $elm$html$Html$p = _VirtualDom_node('p');
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
@@ -5239,39 +5581,54 @@ var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
 var $author$project$Main$view = function (model) {
-	if (model.$ === 'Win') {
-		return A2(
-			$elm$html$Html$h1,
-			_List_Nil,
-			_List_fromArray(
-				[
-					$elm$html$Html$text('Win')
-				]));
-	} else {
-		var guess = model.a;
-		return A2(
-			$elm$html$Html$div,
-			_List_Nil,
-			_List_fromArray(
-				[
-					A2(
-					$elm$html$Html$h1,
-					_List_Nil,
-					_List_fromArray(
-						[
-							$elm$html$Html$text('Guess the word!')
-						])),
-					A2(
-					$elm$html$Html$input,
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$placeholder('Take a guess'),
-							$elm$html$Html$Attributes$value(guess),
-							$elm$html$Html$Events$onInput($author$project$Main$Change)
-						]),
-					_List_Nil)
-				]));
-	}
+	return model.win ? A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$h1,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text('You got it!')
+					]))
+			])) : A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$h1,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Guess the word!')
+					])),
+				A2(
+				$elm$html$Html$h1,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text('to guess : ' + model.toGuess)
+					])),
+				A2(
+				$elm$html$Html$p,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Definition')
+					])),
+				A2(
+				$elm$html$Html$input,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$placeholder('Take a guess'),
+						$elm$html$Html$Attributes$value(model.guess),
+						$elm$html$Html$Events$onInput($author$project$Main$Change)
+					]),
+				_List_Nil)
+			]));
 };
 var $author$project$Main$main = $elm$browser$Browser$element(
 	{init: $author$project$Main$init, subscriptions: $author$project$Main$subscriptions, update: $author$project$Main$update, view: $author$project$Main$view});
