@@ -5417,10 +5417,11 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$element = _Browser_element;
-var $author$project$Main$Model = F4(
-	function (guess, toGuess, meanings, win) {
-		return {guess: guess, meanings: meanings, toGuess: toGuess, win: win};
+var $author$project$Main$Model = F7(
+	function (guess, toGuess, meanings, win, loading, error, showToGuess) {
+		return {error: error, guess: guess, loading: loading, meanings: meanings, showToGuess: showToGuess, toGuess: toGuess, win: win};
 	});
+var $author$project$Main$emptyModel = A7($author$project$Main$Model, '', '', _List_Nil, false, false, '', false);
 var $author$project$Main$GenerateWord = function (a) {
 	return {$: 'GenerateWord', a: a};
 };
@@ -5626,7 +5627,9 @@ var $author$project$Main$wordsList = $elm$core$Array$fromList(
 		['a', 'anywhere', 'below', 'burn', 'climb', 'able', 'apartment', 'bend', 'bus', 'close', 'about', 'appear', 'beneath', 'business', 'clothes', 'above', 'approach', 'beside', 'busy', 'cloud', 'accept', 'area', 'best', 'but', 'coat', 'across', 'arm', 'better', 'buy', 'coffee', 'act', 'around', 'between', 'by', 'cold', 'actually', 'arrive', 'beyond', 'call', 'college', 'add', 'art', 'big', 'calm', 'color', 'admit', 'as', 'bird', 'camera', 'come', 'afraid', 'ask', 'bit', 'can', 'company', 'after', 'asleep', 'bite', 'car', 'completely', 'afternoon', 'at', 'black', 'card', 'computer', 'again', 'attack', 'block', 'care', 'confuse', 'against', 'attention', 'blood', 'careful', 'consider', 'age', 'aunt', 'blow', 'carefully', 'continue', 'ago', 'avoid', 'blue', 'carry', 'control', 'agree', 'away', 'board', 'case', 'conversation', 'ahead', 'baby', 'boat', 'cat', 'cool', 'air', 'back', 'body', 'catch', 'cop', 'alive', 'bad', 'bone', 'cause', 'corner', 'all', 'bag', 'book', 'ceiling', 'count', 'allow', 'ball', 'boot', 'center', 'counter', 'almost', 'bank', 'bore', 'certain', 'country', 'alone', 'bar', 'both', 'certainly', 'couple', 'along', 'barely', 'bother', 'chair', 'course', 'already', 'bathroom', 'bottle', 'chance', 'cover', 'also', 'be', 'bottom', 'change', 'crazy', 'although', 'beach', 'box', 'check', 'create', 'always', 'bear', 'boy', 'cheek', 'creature', 'among', 'beat', 'brain', 'chest', 'cross', 'and', 'beautiful', 'branch', 'child', 'crowd', 'angry', 'because', 'break', 'choice', 'cry', 'animal', 'become', 'breast', 'choose', 'cup', 'another', 'bed', 'breath', 'church', 'cut', 'answer', 'bedroom', 'breathe', 'cigarette', 'dad', 'any', 'beer', 'bridge', 'circle', 'dance', 'anybody', 'before', 'bright', 'city', 'dark', 'anymore', 'begin', 'bring', 'class', 'darkness', 'anyone', 'behind', 'brother', 'clean', 'daughter', 'anything', 'believe', 'brown', 'clear', 'day', 'anyway', 'belong', 'building', 'clearly', 'dead', 'death', 'except', 'funny', 'history', 'law', 'decide', 'excite', 'future', 'hit', 'lay', 'deep', 'expect', 'game', 'hold', 'lead', 'desk', 'explain', 'garden', 'hole', 'leaf', 'despite', 'expression', 'gate', 'home', 'lean', 'die', 'extra', 'gather', 'hope', 'learn', 'different', 'eye', 'gently', 'horse', 'leave', 'dinner', 'face', 'get', 'hospital', 'leg', 'direction', 'fact', 'gift', 'hot', 'less', 'dirt', 'fade', 'girl', 'hotel', 'let', 'disappear', 'fail', 'give', 'hour', 'letter', 'discover', 'fall', 'glance', 'house', 'lie', 'distance', 'familiar', 'glass', 'how', 'life', 'do', 'family', 'go', 'however', 'lift', 'doctor', 'far', 'god', 'huge', 'light', 'dog', 'fast', 'gold', 'human', 'like', 'door', 'father', 'good', 'hundred', 'line', 'doorway', 'fear', 'grab', 'hurry', 'lip', 'down', 'feed', 'grandfather', 'hurt', 'listen', 'dozen', 'feel', 'grandmother', 'husband', 'little', 'drag', 'few', 'grass', 'I', 'local', 'draw', 'field', 'gray', 'ice', 'lock', 'dream', 'fight', 'great', 'idea', 'long', 'dress', 'figure', 'green', 'if', 'look', 'drink', 'fill', 'ground', 'ignore', 'lose', 'drive', 'final', 'group', 'image', 'lot', 'driver', 'finally', 'grow', 'imagine', 'loud', 'drop', 'find', 'guard', 'immediately', 'love', 'dry', 'fine', 'guess', 'important', 'low', 'during', 'finger', 'gun', 'in', 'lucky', 'dust', 'finish', 'guy', 'information', 'lunch', 'each', 'fire', 'hair', 'inside', 'machine', 'ear', 'first', 'half', 'instead', 'main', 'early', 'fish', 'hall', 'interest', 'make', 'earth', 'fit', 'hallway', 'into', 'man', 'easily', 'five', 'hand', 'it', 'manage', 'east', 'fix', 'hang', 'itself', 'many', 'easy', 'flash', 'happen', 'jacket', 'map', 'eat', 'flat', 'happy', 'job', 'mark', 'edge', 'flight', 'hard', 'join', 'marriage', 'eff', 'ort', 'floor', 'hardly', 'joke', 'marry', 'egg', 'flower', 'hate', 'jump', 'matter', 'eight', 'fly', 'have', 'just', 'may', 'either', 'follow', 'he', 'keep', 'maybe', 'else', 'food', 'head', 'key', 'me', 'empty', 'foot', 'hear', 'kick', 'mean', 'end', 'for', 'heart', 'kid', 'meet', 'engine', 'force', 'heat', 'kill', 'member', 'enjoy', 'forehead', 'heavy', 'kind', 'memory', 'enough', 'forest', 'hell', 'kiss', 'mention', 'enter', 'forever', 'hello', 'kitchen', 'message', 'entire', 'forget', 'help', 'knee', 'metal', 'especially', 'form', 'her', 'knife', 'middle', 'even', 'forward', 'here', 'knock', 'might', 'event', 'four', 'herself', 'know', 'mind', 'ever', 'free', 'hey', 'lady', 'mine', 'every', 'fresh', 'hi', 'land', 'minute', 'everybody', 'friend', 'hide', 'language', 'mirror', 'everyone', 'from', 'high', 'large', 'miss', 'everything', 'front', 'hill', 'last', 'moment', 'everywhere', 'full', 'him', 'later', 'money', 'exactly', 'fun', 'himself', 'laugh', 'month', 'moon', 'our', 'quickly', 'send', 'smile', 'more', 'out', 'quiet', 'sense', 'smoke', 'morning', 'outside', 'quietly', 'serious', 'snap', 'most', 'over', 'quite', 'seriously', 'snow', 'mostly', 'own', 'radio', 'serve', 'so', 'mother', 'page', 'rain', 'service', 'soft', 'mountain', 'pain', 'raise', 'set', 'softly', 'mouth', 'paint', 'rather', 'settle', 'soldier', 'move', 'pair', 'reach', 'seven', 'somebody', 'movie', 'pale', 'read', 'several', 'somehow', 'much', 'palm', 'ready', 'sex', 'someone', 'music', 'pants', 'real', 'shadow', 'something', 'must', 'paper', 'realize', 'shake', 'sometimes', 'my', 'parent', 'really', 'shape', 'somewhere', 'myself', 'part', 'reason', 'share', 'son', 'name', 'party', 'receive', 'sharp', 'song', 'narrow', 'pass', 'recognize', 'she', 'soon', 'near', 'past', 'red', 'sheet', 'sorry', 'nearly', 'path', 'refuse', 'ship', 'sort', 'neck', 'pause', 'remain', 'shirt', 'soul', 'need', 'pay', 'remember', 'shoe', 'sound', 'neighbor', 'people', 'remind', 'shoot', 'south', 'never', 'perfect', 'remove', 'shop', 'space', 'new', 'perhaps', 'repeat', 'short', 'speak', 'news', 'personal', 'reply', 'should', 'special', 'next', 'phone', 'rest', 'shoulder', 'spend', 'nice', 'photo', 'return', 'shout', 'spin', 'night', 'pick', 'reveal', 'shove', 'spirit', 'no', 'picture', 'rich', 'show', 'spot', 'nobody', 'piece', 'ride', 'shower', 'spread', 'nod', 'pile', 'right', 'shrug', 'spring', 'noise', 'pink', 'ring', 'shut', 'stage', 'none', 'place', 'rise', 'sick', 'stair', 'nor', 'plan', 'river', 'side', 'stand', 'normal', 'plastic', 'road', 'sigh', 'star', 'north', 'plate', 'rock', 'sight', 'stare', 'nose', 'play', 'roll', 'sign', 'start', 'not', 'please', 'roof', 'silence', 'state', 'note', 'pocket', 'room', 'silent', 'station', 'nothing', 'point', 'round', 'silver', 'stay', 'notice', 'police', 'row', 'simple', 'steal', 'now', 'pool', 'rub', 'simply', 'step', 'number', 'poor', 'run', 'since', 'stick', 'nurse', 'pop', 'rush', 'sing', 'still', 'of', 'porch', 'sad', 'single', 'stomach', 'off', 'position', 'safe', 'sir', 'stone', 'offer', 'possible', 'same', 'sister', 'stop', 'office', 'pour', 'sand', 'sit', 'store', 'officer', 'power', 'save', 'situation', 'storm', 'often', 'prepare', 'say', 'six', 'story', 'oh', 'press', 'scared', 'size', 'straight', 'okay', 'pretend', 'scene', 'skin', 'strange', 'old', 'pretty', 'school', 'sky', 'street', 'on', 'probably', 'scream', 'slam', 'stretch', 'once', 'problem', 'screen', 'sleep', 'strike', 'one', 'promise', 'sea', 'slide', 'strong', 'only', 'prove', 'search', 'slightly', 'student', 'onto', 'pull', 'seat', 'slip', 'study', 'open', 'push', 'second', 'slow', 'stuff', 'or', 'put', 'see', 'slowly', 'stupid', 'order', 'question', 'seem', 'small', 'such', 'other', 'quick', 'sell', 'smell', 'suddenly', 'suggest', 'thick', 'tree', 'wash', 'window', 'suit', 'thin', 'trip', 'watch', 'wine', 'summer', 'thing', 'trouble', 'water', 'wing', 'sun', 'think', 'truck', 'wave', 'winter', 'suppose', 'third', 'true', 'way', 'wipe', 'sure', 'thirty', 'trust', 'we', 'wish', 'surface', 'this', 'truth', 'wear', 'with', 'surprise', 'those', 'try', 'wedding', 'within', 'sweet', 'though', 'turn', 'week', 'without', 'swing', 'three', 'twenty', 'weight', 'woman', 'system', 'throat', 'twice', 'well', 'wonder', 'table', 'through', 'two', 'west', 'wood', 'take', 'throw', 'uncle', 'wet', 'wooden', 'talk', 'tie', 'under', 'what', 'word', 'tall', 'time', 'understand', 'whatever', 'work', 'tea', 'tiny', 'unless', 'wheel', 'world', 'teach', 'tire', 'until', 'when', 'worry', 'teacher', 'to', 'up', 'where', 'would', 'team', 'today', 'upon', 'whether', 'wrap', 'tear', 'together', 'use', 'which', 'write', 'television', 'tomorrow', 'usual', 'while', 'wrong', 'tell', 'tone', 'usually', 'whisper', 'yard', 'ten', 'tongue', 'very', 'white', 'yeah', 'terrible', 'tonight', 'view', 'who', 'year', 'than', 'too', 'village', 'whole', 'yell', 'thank', 'tooth', 'visit', 'whom', 'yellow', 'that', 'top', 'voice', 'whose', 'yes', 'the', 'toss', 'wait', 'why', 'yet', 'their', 'touch', 'wake', 'wide', 'you', 'them', 'toward', 'walk', 'wife', 'young', 'themselves', 'town', 'wall', 'wild', 'your', 'then', 'track', 'want', 'will', 'yourself', 'there', 'train', 'war', 'win', 'these', 'travel', 'warm', 'wind']));
 var $author$project$Main$init = function (_v0) {
 	return _Utils_Tuple2(
-		A4($author$project$Main$Model, '', '', $elm$core$Array$empty, false),
+		_Utils_update(
+			$author$project$Main$emptyModel,
+			{loading: true}),
 		$author$project$Main$getRandomWord($author$project$Main$wordsList));
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
@@ -6465,7 +6468,7 @@ var $elm$http$Http$get = function (r) {
 	return $elm$http$Http$request(
 		{body: $elm$http$Http$emptyBody, expect: r.expect, headers: _List_Nil, method: 'GET', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: r.url});
 };
-var $elm$json$Json$Decode$array = _Json_decodeArray;
+var $elm$json$Json$Decode$list = _Json_decodeList;
 var $author$project$Main$Word = F2(
 	function (word, meanings) {
 		return {meanings: meanings, word: word};
@@ -6495,7 +6498,7 @@ var $author$project$Main$definitionDecoder = A3(
 var $author$project$Main$meaningDecoder = A3(
 	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 	'definitions',
-	$elm$json$Json$Decode$array($author$project$Main$definitionDecoder),
+	$elm$json$Json$Decode$list($author$project$Main$definitionDecoder),
 	A3(
 		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 		'partOfSpeech',
@@ -6504,17 +6507,17 @@ var $author$project$Main$meaningDecoder = A3(
 var $author$project$Main$wordDecoder = A3(
 	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 	'meanings',
-	$elm$json$Json$Decode$array($author$project$Main$meaningDecoder),
+	$elm$json$Json$Decode$list($author$project$Main$meaningDecoder),
 	A3(
 		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 		'word',
 		$elm$json$Json$Decode$string,
 		$elm$json$Json$Decode$succeed($author$project$Main$Word)));
-var $author$project$Main$jsonDecoder = $elm$json$Json$Decode$array($author$project$Main$wordDecoder);
+var $author$project$Main$jsondecoder = $elm$json$Json$Decode$list($author$project$Main$wordDecoder);
 var $author$project$Main$getMeanings = function (word) {
 	return $elm$http$Http$get(
 		{
-			expect: A2($elm$http$Http$expectJson, $author$project$Main$GotJson, $author$project$Main$jsonDecoder),
+			expect: A2($elm$http$Http$expectJson, $author$project$Main$GotJson, $author$project$Main$jsondecoder),
 			url: _Utils_ap($author$project$Main$api, word)
 		});
 };
@@ -6531,7 +6534,16 @@ var $author$project$Main$grabWord = function (a) {
 		var word = a.a;
 		return word;
 	} else {
-		return A2($author$project$Main$Word, '', $elm$core$Array$empty);
+		return A2($author$project$Main$Word, '', _List_Nil);
+	}
+};
+var $elm$core$List$head = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(x);
+	} else {
+		return $elm$core$Maybe$Nothing;
 	}
 };
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
@@ -6543,39 +6555,51 @@ var $author$project$Main$update = F2(
 			case 'Change':
 				var guess = msg.a;
 				return _Utils_eq(guess, model.toGuess) ? _Utils_Tuple2(
-					A4($author$project$Main$Model, '', '', $elm$core$Array$empty, true),
+					_Utils_update(
+						model,
+						{win: true}),
 					$elm$core$Platform$Cmd$none) : _Utils_Tuple2(
-					A4($author$project$Main$Model, guess, model.toGuess, model.meanings, false),
+					_Utils_update(
+						model,
+						{guess: guess}),
+					$elm$core$Platform$Cmd$none);
+			case 'Show':
+				var show = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{showToGuess: show}),
 					$elm$core$Platform$Cmd$none);
 			case 'GenerateWord':
 				var newInt = msg.a;
 				var newWord = $author$project$Main$grabString(
 					A2($elm$core$Array$get, newInt, $author$project$Main$wordsList));
 				return _Utils_Tuple2(
-					A4($author$project$Main$Model, '', newWord, $elm$core$Array$empty, false),
+					_Utils_update(
+						model,
+						{toGuess: newWord}),
 					$author$project$Main$getMeanings(newWord));
 			default:
 				var result = msg.a;
 				if (result.$ === 'Ok') {
 					var json = result.a;
 					return _Utils_Tuple2(
-						A4(
-							$author$project$Main$Model,
-							'',
-							model.toGuess,
-							$author$project$Main$grabWord(
-								A2($elm$core$Array$get, 0, json)).meanings,
-							false),
+						_Utils_update(
+							model,
+							{
+								loading: false,
+								meanings: $author$project$Main$grabWord(
+									$elm$core$List$head(json)).meanings
+							}),
 						$elm$core$Platform$Cmd$none);
 				} else {
 					var err = result.a;
 					return _Utils_Tuple2(
-						A4(
-							$author$project$Main$Model,
-							$elm$core$Debug$toString(err),
-							model.toGuess,
-							$elm$core$Array$empty,
-							false),
+						_Utils_update(
+							model,
+							{
+								error: $elm$core$Debug$toString(err)
+							}),
 						$elm$core$Platform$Cmd$none);
 				}
 		}
@@ -6583,32 +6607,100 @@ var $author$project$Main$update = F2(
 var $author$project$Main$Change = function (a) {
 	return {$: 'Change', a: a};
 };
+var $author$project$Main$Show = function (a) {
+	return {$: 'Show', a: a};
+};
 var $elm$html$Html$div = _VirtualDom_node('div');
-var $author$project$Main$grabDef = function (a) {
-	if (a.$ === 'Just') {
-		var def = a.a;
-		return def;
-	} else {
-		return $author$project$Main$Definition('');
-	}
-};
-var $author$project$Main$grabMeaning = function (a) {
-	if (a.$ === 'Just') {
-		var meaning = a.a;
-		return meaning;
-	} else {
-		return A2($author$project$Main$Meaning, 'test', $elm$core$Array$empty);
-	}
-};
+var $elm$json$Json$Encode$string = _Json_wrap;
+var $elm$html$Html$Attributes$stringProperty = F2(
+	function (key, string) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$string(string));
+	});
+var $elm$html$Html$Attributes$for = $elm$html$Html$Attributes$stringProperty('htmlFor');
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
+var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
 var $elm$html$Html$input = _VirtualDom_node('input');
+var $elm$html$Html$label = _VirtualDom_node('label');
+var $elm$html$Html$li = _VirtualDom_node('li');
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $elm$html$Html$ul = _VirtualDom_node('ul');
+var $author$project$Main$definitionsToHtml = function (lst) {
+	return A2(
+		$elm$html$Html$ul,
+		_List_Nil,
+		A2(
+			$elm$core$List$map,
+			function (x) {
+				return A2(
+					$elm$html$Html$li,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text(x.definition)
+						]));
+			},
+			lst));
+};
+var $elm$html$Html$h2 = _VirtualDom_node('h2');
+var $author$project$Main$meaningsToHtml = function (lst) {
+	if (!lst.b) {
+		return $elm$html$Html$text('');
+	} else {
+		var x = lst.a;
+		var xs = lst.b;
+		return A2(
+			$elm$html$Html$ul,
+			_List_Nil,
+			A2(
+				$elm$core$List$map,
+				function (y) {
+					return A2(
+						$elm$html$Html$li,
+						_List_Nil,
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$h2,
+								_List_Nil,
+								_List_fromArray(
+									[
+										$elm$html$Html$text(y.partOfSpeech)
+									])),
+								$author$project$Main$definitionsToHtml(y.definitions)
+							]));
+				},
+				lst));
+	}
+};
+var $elm$core$Basics$neq = _Utils_notEqual;
+var $elm$core$Basics$not = _Basics_not;
+var $elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var $elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var $elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'click',
+		$elm$json$Json$Decode$succeed(msg));
+};
 var $elm$html$Html$Events$alwaysStop = function (x) {
 	return _Utils_Tuple2(x, true);
 };
 var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
 	return {$: 'MayStopPropagation', a: a};
 };
-var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
 var $elm$html$Html$Events$stopPropagationOn = F2(
 	function (event, decoder) {
 		return A2(
@@ -6634,18 +6726,8 @@ var $elm$html$Html$Events$onInput = function (tagger) {
 			$elm$html$Html$Events$alwaysStop,
 			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
 };
-var $elm$html$Html$p = _VirtualDom_node('p');
-var $elm$json$Json$Encode$string = _Json_wrap;
-var $elm$html$Html$Attributes$stringProperty = F2(
-	function (key, string) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$string(string));
-	});
 var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
 var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
 var $author$project$Main$view = function (model) {
 	return model.win ? A2(
@@ -6660,6 +6742,31 @@ var $author$project$Main$view = function (model) {
 					[
 						$elm$html$Html$text('You got it!')
 					]))
+			])) : (model.loading ? A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$h1,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Loading')
+					]))
+			])) : ((model.error !== '') ? A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$h1,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Error !')
+					])),
+				$elm$html$Html$text(model.error)
 			])) : A2(
 		$elm$html$Html$div,
 		_List_Nil,
@@ -6672,25 +6779,19 @@ var $author$project$Main$view = function (model) {
 					[
 						$elm$html$Html$text('Guess the word!')
 					])),
-				A2(
+				model.showToGuess ? A2(
 				$elm$html$Html$h1,
 				_List_Nil,
 				_List_fromArray(
 					[
 						$elm$html$Html$text('to guess : ' + model.toGuess)
-					])),
+					])) : $elm$html$Html$text(''),
 				A2(
-				$elm$html$Html$p,
+				$elm$html$Html$ul,
 				_List_Nil,
 				_List_fromArray(
 					[
-						$elm$html$Html$text(
-						$author$project$Main$grabDef(
-							A2(
-								$elm$core$Array$get,
-								0,
-								$author$project$Main$grabMeaning(
-									A2($elm$core$Array$get, 0, model.meanings)).definitions)).definition)
+						$author$project$Main$meaningsToHtml(model.meanings)
 					])),
 				A2(
 				$elm$html$Html$input,
@@ -6700,8 +6801,28 @@ var $author$project$Main$view = function (model) {
 						$elm$html$Html$Attributes$value(model.guess),
 						$elm$html$Html$Events$onInput($author$project$Main$Change)
 					]),
-				_List_Nil)
-			]));
+				_List_Nil),
+				A2(
+				$elm$html$Html$input,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$id('show'),
+						$elm$html$Html$Attributes$type_('checkbox'),
+						$elm$html$Html$Events$onClick(
+						$author$project$Main$Show(!model.showToGuess))
+					]),
+				_List_Nil),
+				A2(
+				$elm$html$Html$label,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$for('show')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Show the answer')
+					]))
+			]))));
 };
 var $author$project$Main$main = $elm$browser$Browser$element(
 	{init: $author$project$Main$init, subscriptions: $author$project$Main$subscriptions, update: $author$project$Main$update, view: $author$project$Main$view});

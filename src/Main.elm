@@ -6,8 +6,8 @@ import Html.Events exposing (..)
 import Http
 import Random
 import Array exposing (..)
-import Json.Decode as JSOND exposing (..)
-import Json.Decode.Pipeline exposing (required, optional, hardcoded)
+import Json.Decode as Jsond exposing (..)
+import Json.Decode.Pipeline as Pipe exposing (required, optional, hardcoded)
 
 --MAIN
 main : Program () Model Msg
@@ -41,13 +41,13 @@ grabWord : Maybe Word -> Word
 grabWord a = 
   case a of 
     Just word -> word
-    Nothing -> Word "" empty 
+    Nothing -> Word "" [] 
 
 grabMeaning : Maybe Meaning -> Meaning
 grabMeaning a = 
   case a of 
     Just meaning -> meaning
-    Nothing -> Meaning "test" empty
+    Nothing -> Meaning "test" []
 
 getRandomWord : Array String -> Cmd Msg
 getRandomWord arr = Random.generate GenerateWord (Random.int 0 ((Array.length arr)-1))
@@ -56,18 +56,18 @@ getMeanings: String -> Cmd Msg
 getMeanings word = 
   Http.get
     { url = api++word
-    , expect = Http.expectJson GotJson jsonDecoder
+    , expect = Http.expectJson GotJson jsondecoder
     }
 
 
 type alias Word = { word : String
-  , meanings : Array Meaning
+  , meanings : List Meaning
   }
 
 
 
 type alias Meaning = { partOfSpeech : String
-  , definitions : Array Definition
+  , definitions : List Definition
   }
 
 type alias Definition = { definition : String
@@ -75,56 +75,62 @@ type alias Definition = { definition : String
 
 definitionDecoder : Decoder Definition
 definitionDecoder = 
-  JSOND.succeed Definition
-    |> Json.Decode.Pipeline.required "definition" string
+  Jsond.succeed Definition
+    |> Pipe.required "definition" string
 
 meaningDecoder : Decoder Meaning
 meaningDecoder = 
-  JSOND.succeed Meaning
-    |> Json.Decode.Pipeline.required "partOfSpeech" string
-    |> Json.Decode.Pipeline.required "definitions" (JSOND.array definitionDecoder)
+  Jsond.succeed Meaning
+    |> Pipe.required "partOfSpeech" string
+    |> Pipe.required "definitions" (Jsond.list definitionDecoder)
 
 wordDecoder : Decoder Word
 wordDecoder = 
-  JSOND.succeed Word
-    |> Json.Decode.Pipeline.required "word" string
-    |> Json.Decode.Pipeline.required "meanings" (JSOND.array meaningDecoder)
+  Jsond.succeed Word
+    |> Pipe.required "word" string
+    |> Pipe.required "meanings" (Jsond.list meaningDecoder)
 
-jsonDecoder : Decoder (Array Word)
-jsonDecoder = JSOND.array wordDecoder
+jsondecoder : Decoder (List Word)
+jsondecoder = Jsond.list wordDecoder
 
 
 -- MODEL
 type alias Model = { guess : String
   , toGuess : String
-  , meanings : Array Meaning
+  , meanings : List Meaning
   , win : Bool
+  , loading: Bool
+  , error: String
+  , showToGuess: Bool
   } 
 
+emptyModel : Model
+emptyModel = Model "" "" [] False False "" False
 
 --INIT
 init : flags -> (Model, Cmd Msg)
-init _ = (Model "" "" empty False, getRandomWord wordsList)
+init _ = ({emptyModel | loading = True}, getRandomWord wordsList)
   
 
 -- UPDATE
-type Msg = Change String  | GenerateWord Int | GotJson (Result Http.Error (Array Word))
+type Msg = Change String  | Show Bool | GenerateWord Int | GotJson (Result Http.Error (List Word))
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of 
-    Change guess -> if guess== model.toGuess
-      then (Model "" "" empty True, Cmd.none)
-      else (Model guess model.toGuess model.meanings False, Cmd.none)
+    Change guess -> if guess == model.toGuess
+      then ({model | win=True}, Cmd.none)
+      else ({model | guess=guess}, Cmd.none)
+    Show show -> ({model | showToGuess=show}, Cmd.none)
     GenerateWord newInt -> let newWord = grabString (Array.get (newInt) wordsList) in
-      ( Model ""  newWord empty False, getMeanings newWord)
+      ({model | toGuess = newWord}, getMeanings newWord)
     GotJson result ->
       case result of
-      Ok json -> (Model "" model.toGuess (grabWord (Array.get 0 json)).meanings (False), Cmd.none)
-      Err err -> (Model (Debug.toString err) model.toGuess empty False, Cmd.none)
+      Ok json -> ({model | meanings = (grabWord (List.head json)).meanings, loading = False }, Cmd.none)
+      Err err -> ({model | error = Debug.toString err}, Cmd.none)
 
     
-      
+
 
 -- SUBSCRIPTIONS
 subscriptions : Model -> Sub Msg
@@ -133,16 +139,30 @@ subscriptions model = Sub.none
 -- VIEW
 view : Model -> Html Msg
 view model =
-      if model.win then
-        div []
-          [ h1 [][text "You got it!"]
-            
-          ]
-      else
-      div []
-      [ h1 [][text "Guess the word!"],
-      h1 [][text ("to guess : " ++ model.toGuess)],
-        p[] [text (grabDef (Array.get 0 (grabMeaning (Array.get 0 model.meanings)).definitions)).definition],
-        input [ placeholder "Take a guess", Html.Attributes.value model.guess, onInput Change] []
+  if model.win then
+    div [][ h1 [][text "You got it!"] ]
+  else if model.loading then
+    div [][ h1 [][text "Loading ..."] ]
+  else if (model.error /= "") then
+    div [][ h1 [][text "Error !"]
+    , text model.error
       ]
+  else
+  div [] [ h1 [][text "Guess the word!"],
+    if model.showToGuess then
+      h1 [][text ("to guess : " ++ model.toGuess)]
+    else text "",
+    ul[][meaningsToHtml model.meanings],
+    input [ placeholder "Take a guess", Html.Attributes.value model.guess, onInput Change] [],
+    input [ id "show",type_ "checkbox", onClick (Show (not model.showToGuess))] [],
+    label [for "show"][text "Show the answer"]
+  ]
     
+meaningsToHtml : List Meaning -> Html Msg
+meaningsToHtml lst = 
+  case lst of
+    [] -> text ""
+    (x :: xs) -> ul [] (List.map (\y -> li [] [h2[][text y.partOfSpeech], definitionsToHtml y.definitions]) lst)
+
+definitionsToHtml : List Definition -> Html Msg
+definitionsToHtml lst = ul [] (List.map (\x -> li [] [text x.definition]) lst)
