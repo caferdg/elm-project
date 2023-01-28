@@ -6584,7 +6584,7 @@ var $author$project$Main$update = F2(
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{A: 'Can\'t get words list !', w: false}),
+							{A: 'Can\'t get words list. Try to run elm reactor.', w: false}),
 						$elm$core$Platform$Cmd$none);
 				}
 			case 2:
@@ -6614,7 +6614,7 @@ var $author$project$Main$update = F2(
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{A: 'Can\'t reach to the API !', w: false}),
+							{A: 'Can\'t reach to the API.', w: false}),
 						$elm$core$Platform$Cmd$none);
 				}
 		}
@@ -6635,10 +6635,8 @@ var $elm$html$Html$Attributes$stringProperty = F2(
 	});
 var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
 var $elm$html$Html$div = _VirtualDom_node('div');
-var $elm$html$Html$Attributes$for = $elm$html$Html$Attributes$stringProperty('htmlFor');
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
 var $elm$html$Html$h2 = _VirtualDom_node('h2');
-var $elm$html$Html$h3 = _VirtualDom_node('h3');
 var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
 var $elm$html$Html$input = _VirtualDom_node('input');
 var $elm$html$Html$label = _VirtualDom_node('label');
@@ -6649,10 +6647,7 @@ var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $author$project$Main$definitionsToHtml = function (lst) {
 	return A2(
 		$elm$html$Html$ol,
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$class('pl-5 mt-2 space-y-1 list-decimal list-inside')
-			]),
+		_List_Nil,
 		A2(
 			$elm$core$List$map,
 			function (def) {
@@ -6670,10 +6665,7 @@ var $elm$html$Html$ul = _VirtualDom_node('ul');
 var $author$project$Main$meaningsToHtml = function (lst) {
 	return A2(
 		$elm$html$Html$ul,
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$class('space-y-4 list-disc list-inside')
-			]),
+		_List_Nil,
 		A2(
 			$elm$core$List$map,
 			function (meaning) {
@@ -6758,33 +6750,12 @@ var $author$project$Main$view = function (model) {
 			[
 				A2(
 				$elm$html$Html$h1,
+				_List_Nil,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$class('text-5xl font-extrabold')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text('You got it!')
+						$elm$html$Html$text('👏 You got it!')
 					]))
 			])) : (model.w ? A2(
-		$elm$html$Html$div,
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$id('container')
-			]),
-		_List_fromArray(
-			[
-				A2(
-				$elm$html$Html$h1,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('text-5xl font-extrabold')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text('Loading ...')
-					]))
-			])) : ((model.A !== '') ? A2(
 		$elm$html$Html$div,
 		_List_fromArray(
 			[
@@ -6797,10 +6768,28 @@ var $author$project$Main$view = function (model) {
 				_List_Nil,
 				_List_fromArray(
 					[
-						$elm$html$Html$text('Error !')
+						$elm$html$Html$text('🔍 Loading ...')
+					]))
+			])) : ((model.A !== '') ? A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$id('container')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$h1,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('highlight')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Error')
 					])),
 				A2(
-				$elm$html$Html$h3,
+				$elm$html$Html$h2,
 				_List_Nil,
 				_List_fromArray(
 					[
@@ -6815,53 +6804,92 @@ var $author$project$Main$view = function (model) {
 		_List_fromArray(
 			[
 				A2(
-				$elm$html$Html$h1,
+				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$class('text-5xl font-extrabold')
+						$elm$html$Html$Attributes$class('top')
 					]),
 				_List_fromArray(
 					[
-						$elm$html$Html$text('Guess the word!')
+						A2(
+						$elm$html$Html$h1,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text('🔍 Guess the word')
+							])),
+						model.G ? A2(
+						$elm$html$Html$h2,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text('the answer was '),
+								A2(
+								$elm$html$Html$div,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$class('highlight')
+									]),
+								_List_fromArray(
+									[
+										$elm$html$Html$text(model.H)
+									])),
+								$elm$html$Html$text(' 🙃')
+							])) : $elm$html$Html$text('')
 					])),
-				model.G ? A2(
-				$elm$html$Html$h2,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text('to guess : ' + model.H)
-					])) : $elm$html$Html$text(''),
 				$author$project$Main$meaningsToHtml(model.aL),
 				A2(
-				$elm$html$Html$input,
+				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$type_('text'),
-						$elm$html$Html$Attributes$placeholder('Take a guess'),
-						$elm$html$Html$Attributes$class('border text-sm rounded-lg focus:ring-blue-500'),
-						$elm$html$Html$Attributes$value(model.I),
-						$elm$html$Html$Events$onInput($author$project$Main$Change)
-					]),
-				_List_Nil),
-				A2(
-				$elm$html$Html$input,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$id('show'),
-						$elm$html$Html$Attributes$type_('checkbox'),
-						$elm$html$Html$Events$onClick(
-						$author$project$Main$Show(!model.G))
-					]),
-				_List_Nil),
-				A2(
-				$elm$html$Html$label,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$for('show')
+						$elm$html$Html$Attributes$class('bottom')
 					]),
 				_List_fromArray(
 					[
-						$elm$html$Html$text('Show the answer')
+						A2(
+						$elm$html$Html$input,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$type_('text'),
+								$elm$html$Html$Attributes$placeholder('Take a guess'),
+								$elm$html$Html$Attributes$value(model.I),
+								$elm$html$Html$Events$onInput($author$project$Main$Change)
+							]),
+						_List_Nil),
+						A2(
+						$elm$html$Html$label,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('wrapper')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$input,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$type_('checkbox'),
+										$elm$html$Html$Events$onClick(
+										$author$project$Main$Show(!model.G))
+									]),
+								_List_Nil),
+								A2(
+								$elm$html$Html$div,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$class('slider')
+									]),
+								_List_fromArray(
+									[
+										A2(
+										$elm$html$Html$div,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$class('knob')
+											]),
+										_List_Nil)
+									]))
+							]))
 					]))
 			]))));
 };

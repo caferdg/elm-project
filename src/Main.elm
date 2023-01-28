@@ -57,15 +57,14 @@ update msg model =
     GotWords result ->
       case result of
       Ok text -> ({model | wordsArr = (Array.fromList (String.split " " text))}, getRandomInt (Array.fromList (String.split " " text)))
-      Err err -> ({model | error = "Can't get words list !", loading = False}, Cmd.none)
+      Err err -> ({model | error = "Can't get words list. Try to run elm reactor.", loading = False}, Cmd.none)
     GenerateWord newInt -> let newWord = grabString (Array.get (newInt) model.wordsArr) in
       ({model | toGuess = newWord}, getMeanings newWord)
     GotJson result ->
       case result of
       Ok json -> ({model | meanings = (grabWord (List.head json)).meanings, loading = False }, Cmd.none)
-      Err err -> ({model | error = "Can't reach to the API !", loading = False}, Cmd.none)
+      Err err -> ({model | error = "Can't reach to the API.", loading = False}, Cmd.none)
 
-  
 
 -- SUBSCRIPTIONS
 subscriptions : Model -> Sub Msg
@@ -75,25 +74,32 @@ subscriptions model = Sub.none
 view : Model -> Html Msg
 view model =
   if model.win then
-    div [id "container"][ h1 [class "text-5xl font-extrabold"][text "You got it!"] ]
+    div [id "container"][ h1 [][text "👏 You got it!"] ]
   else if model.loading then
-    div [id "container"][ h1 [class "text-5xl font-extrabold"][text "Loading ..."] ]
-  else if (model.error /= "") then div [id "container"][ h1 [][text "Error !"] , h3 [][text model.error]]
+    div [id "container"][ h1 [][text "🔍 Loading ..."] ]
+  else if (model.error /= "") then
+    div [id "container"][ h1 [class "highlight"][text "Error"] , h2 [][text model.error]]
   else
-  div [id "container"] [ h1 [class "text-5xl font-extrabold"][text "Guess the word!"],
-    if model.showToGuess then h2 [][text ("to guess : " ++ model.toGuess)]
-    else text "",
+  div [id "container"] [ div[class "top"][
+      h1 [][text "🔍 Guess the word"],
+      if model.showToGuess then h2 [][text ("the answer was "), div[class "highlight"][text model.toGuess], text " 🙃"]
+      else text ""  
+    ],
     meaningsToHtml model.meanings,
-    input [ type_ "text", placeholder "Take a guess",class "border text-sm rounded-lg focus:ring-blue-500", Html.Attributes.value model.guess, onInput Change] [],
-    input [ id "show", type_ "checkbox", onClick (Show (not model.showToGuess))] [],
-    label [for "show"][text "Show the answer"]
+    div [class "bottom"][
+      input [ type_ "text", placeholder "Take a guess", Html.Attributes.value model.guess, onInput Change] [],
+      label [class "wrapper"][
+        input [ type_ "checkbox", onClick (Show (not model.showToGuess))] [],
+        div[class "slider"][div[class "knob"][]]
+      ]
+    ]
   ]
     
 meaningsToHtml : List Meaning -> Html Msg
-meaningsToHtml lst = ul [class "space-y-4 list-disc list-inside"] (List.map (\meaning -> li [] [h2[][text meaning.partOfSpeech], definitionsToHtml meaning.definitions]) lst)
+meaningsToHtml lst = ul [] (List.map (\meaning -> li [] [h2[][text meaning.partOfSpeech], definitionsToHtml meaning.definitions]) lst)
 
 definitionsToHtml : List Definition -> Html Msg
-definitionsToHtml lst = ol [class "pl-5 mt-2 space-y-1 list-decimal list-inside"] (List.map (\def -> li [] [text def.definition]) lst)
+definitionsToHtml lst = ol [] (List.map (\def -> li [] [text def.definition]) lst)
 
 getRandomInt : Array String -> Cmd Msg
 getRandomInt arr = Random.generate GenerateWord (Random.int 0 ((Array.length arr)-1))
