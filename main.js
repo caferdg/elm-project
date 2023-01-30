@@ -6213,7 +6213,7 @@ var $author$project$Main$init = function (_v0) {
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
-var $author$project$Main$subscriptions = function (model) {
+var $author$project$Main$subscriptions = function (_v0) {
 	return $elm$core$Platform$Sub$none;
 };
 var $elm$core$Array$fromListHelp = F3(
@@ -6580,7 +6580,6 @@ var $author$project$Main$update = F2(
 							$elm$core$Array$fromList(
 								A2($elm$core$String$split, ' ', text))));
 				} else {
-					var err = result.a;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -6610,11 +6609,10 @@ var $author$project$Main$update = F2(
 							}),
 						$elm$core$Platform$Cmd$none);
 				} else {
-					var err = result.a;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{A: 'Can\'t reach to the API.', w: false}),
+							{A: 'Can\'t reach the API.', w: false}),
 						$elm$core$Platform$Cmd$none);
 				}
 		}
