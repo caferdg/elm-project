@@ -105,3 +105,15 @@ input[type="checkbox"]:checked+.slider .knob {
     -moz-border-radius: 4px;
     border-radius: 4px;
 }
+
+@media only screen and (max-width: 600px) {
+    body{
+        padding : 20px;
+    }
+    #container {
+        width: 100%;
+    }
+    ol {
+        padding-left: 0;
+    }
+}
