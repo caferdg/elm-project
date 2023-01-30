@@ -46,7 +46,11 @@ init _ = ({emptyModel | loading = True}, getWordsList)
   
 
 -- UPDATE
-type Msg = Change String  | Show Bool | GenerateWord Int | GotJson (Result Http.Error (List Word)) | GotWords (Result Http.Error String)
+type Msg = Change String 
+  | Show Bool 
+  | GenerateWord Int 
+  | GotJson (Result Http.Error (List Word)) 
+  | GotWords (Result Http.Error String)
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of 
@@ -57,18 +61,18 @@ update msg model =
     GotWords result ->
       case result of
       Ok text -> ({model | wordsArr = (Array.fromList (String.split " " text))}, getRandomInt (Array.fromList (String.split " " text)))
-      Err err -> ({model | error = "Can't get words list. Try to run elm reactor.", loading = False}, Cmd.none)
+      Err _ -> ({model | error = "Can't get words list. Try to run elm reactor.", loading = False}, Cmd.none)
     GenerateWord newInt -> let newWord = grabString (Array.get (newInt) model.wordsArr) in
       ({model | toGuess = newWord}, getMeanings newWord)
     GotJson result ->
       case result of
       Ok json -> ({model | meanings = (grabWord (List.head json)).meanings, loading = False }, Cmd.none)
-      Err err -> ({model | error = "Can't reach to the API.", loading = False}, Cmd.none)
+      Err _ -> ({model | error = "Can't reach the API.", loading = False}, Cmd.none)
 
 
 -- SUBSCRIPTIONS
 subscriptions : Model -> Sub Msg
-subscriptions model = Sub.none
+subscriptions _ = Sub.none
 
 -- VIEW
 view : Model -> Html Msg
