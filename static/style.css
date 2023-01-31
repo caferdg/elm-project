@@ -116,4 +116,10 @@ input[type="checkbox"]:checked+.slider .knob {
     ol {
         padding-left: 0;
     }
+    .top {
+        flex-direction: column;
+    }
+    .bottom{
+        justify-content: space-between;
+    }
 }
