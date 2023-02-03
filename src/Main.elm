@@ -28,8 +28,7 @@ main =
 
 -- MODEL
 type alias Model = { guess : String
-  , toGuess : String
-  , meanings : List Meaning
+  , toGuess : Word
   , win : Bool
   , loading: Bool
   , error: String
@@ -38,7 +37,7 @@ type alias Model = { guess : String
   } 
 
 emptyModel : Model
-emptyModel = Model "" "" [] False False "" False empty
+emptyModel = Model "" emptyWord False False "" False empty
 
 -- INIT
 init : flags -> (Model, Cmd Msg)
@@ -51,11 +50,12 @@ type Msg = Change String
   | GenerateWord Int 
   | GotJson (Result Http.Error (List Word)) 
   | GotWords (Result Http.Error String)
+  | Retry
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of 
     Change guess ->
-      if guess == model.toGuess then ({model | win=True}, Cmd.none)
+      if guess == model.toGuess.word then ({model | win=True}, Cmd.none)
       else ({model | guess=guess}, Cmd.none)
     Show show -> ({model | showToGuess=show}, Cmd.none)
     GotWords result ->
@@ -63,11 +63,12 @@ update msg model =
       Ok text -> ({model | wordsArr = (Array.fromList (String.split " " text))}, getRandomInt (Array.fromList (String.split " " text)))
       Err _ -> ({model | error = "Can't get words list. Try to run elm reactor.", loading = False}, Cmd.none)
     GenerateWord newInt -> let newWord = grabString (Array.get (newInt) model.wordsArr) in
-      ({model | toGuess = newWord}, getMeanings newWord)
+      ({model | toGuess = (Word newWord [] [])}, getMeanings newWord)
     GotJson result ->
       case result of
-      Ok json -> ({model | meanings = (grabWord (List.head json)).meanings, loading = False }, Cmd.none)
+      Ok json -> ({model | toGuess = (Word model.toGuess.word (grabWord (List.head json)).meanings (grabWord (List.head json)).phonetics), loading = False }, Cmd.none)
       Err _ -> ({model | error = "Can't reach the API.", loading = False}, Cmd.none)
+    Retry -> ({emptyModel | loading = True}, getWordsList)
 
 
 -- SUBSCRIPTIONS
@@ -78,7 +79,14 @@ subscriptions _ = Sub.none
 view : Model -> Html Msg
 view model =
   if model.win then
-    div [id "container"][ h1 [][text "👏 You got it!"] ]
+    div [id "container"][
+       h1 [][text "👏 You got it!"]
+       , h2[][ text "It was indeed ", div[class "highlight"][text model.toGuess.word]]
+       , br [] []
+       , h2[][ text ("Phonetic : "++(grabPhon (List.head model.toGuess.phonetics)).text)]
+       , audio [src (getAudio model.toGuess.phonetics), autoplay True, controls True][]
+       , button [onClick Retry][text "🔁 play again"]
+      ]
   else if model.loading then
     div [id "container"][ h1 [][text "🔍 Loading ..."] ]
   else if (model.error /= "") then
@@ -86,10 +94,10 @@ view model =
   else
   div [id "container"] [ div[class "top"][
       h1 [][text "🔍 Guess the word"],
-      if model.showToGuess then h2 [][text ("the answer was "), div[class "highlight"][text model.toGuess], text " 🙃"]
+      if model.showToGuess then h2 [][text ("the answer was "), div[class "highlight"][text model.toGuess.word], text " 🙃"]
       else text ""  
     ],
-    meaningsToHtml model.meanings,
+    meaningsToHtml model.toGuess.meanings,
     div [class "bottom"][
       input [ type_ "text", placeholder "Take a guess", Html.Attributes.value model.guess, onInput Change] [],
       label [class "wrapper"][

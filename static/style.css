@@ -24,11 +24,11 @@ h2 {
     margin: .5em;
 }
 
-input {
+input[type="text"] {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    margin-bottom: 10px;
+    width: 300px;
 }
 
 .top {
@@ -109,6 +109,19 @@ ol > li {
     text-align: justify;
 }
 
+button{
+    padding : 10px 20px;
+    border : 1px solid #496887;
+    border-radius : 5px;
+    background-color : rgba(0, 0, 0, 0);
+    cursor : pointer;
+    font-size : 1em;
+    font-weight : 700;
+    display: block;
+    color: #2e465e;
+    margin-top: 100px;
+}
+
 @media only screen and (max-width: 600px) {
     body{
         padding : 20px;
@@ -124,5 +137,8 @@ ol > li {
     }
     .bottom{
         justify-content: space-between;
+    }
+    input[type="text"] {
+        width: 100%;
     }
 }
