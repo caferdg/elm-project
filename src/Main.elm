@@ -61,13 +61,13 @@ update msg model =
     GotWords result ->
       case result of
       Ok text -> ({model | wordsArr = (Array.fromList (String.split " " text))}, getRandomInt (Array.fromList (String.split " " text)))
-      Err _ -> ({model | error = "Can't get words list. Try to run elm reactor.", loading = False}, Cmd.none)
+      Err _ -> ({model | error = "Could not get words list. Try to run elm reactor.", loading = False}, Cmd.none)
     GenerateWord newInt -> let newWord = grabString (Array.get (newInt) model.wordsArr) in
       ({model | toGuess = (Word newWord [] [])}, getMeanings newWord)
     GotJson result ->
       case result of
       Ok json -> ({model | toGuess = (Word model.toGuess.word (grabWord (List.head json)).meanings (grabWord (List.head json)).phonetics), loading = False }, Cmd.none)
-      Err _ -> ({model | error = "Can't reach the API.", loading = False}, Cmd.none)
+      Err _ -> ({model | error = "Could not reach the API.", loading = False}, Cmd.none)
     Retry -> ({emptyModel | loading = True}, getWordsList)
 
 
